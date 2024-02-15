@@ -34,7 +34,7 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          PROJECT_PATH: 'bank-app-frontend'
+          PROJECT_ROOT_PATH: 'bank-app-frontend'
           DOCKERFILE_PATH: 'bank-app-frontend/Dockerfile'
           IMAGE_NAME: 'thebankappcontainer.azurecr.io/bankappfrontend'
         run: |
@@ -47,7 +47,7 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          PROJECT_PATH: 'BankTrackingSystem'
+          PROJECT_ROOT_PATH: 'BankTrackingSystem'
           DOCKERFILE_PATH: 'BankTrackingSystem/Dockerfile'
           IMAGE_NAME: 'thebankappcontainer.azurecr.io/banktrackingsystem'
         run: |
