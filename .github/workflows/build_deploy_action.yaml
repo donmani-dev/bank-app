@@ -15,3 +15,38 @@ jobs:
       - name: List repository files
         run: |
           ls ${{ github.workspace }}
+
+      - name: Build and push BankAppBackend Docker image
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          PROJECT_PATH: 'bank-app-backend/BankAppBackend'  # Adjust the path to your project
+          IMAGE_NAME: 'thebankappcontainer.azurecr.io'
+        run: |
+          cd $PROJECT_PATH
+          docker build -t $IMAGE_NAME .
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+          docker push $IMAGE_NAME
+      - name: Build and push bank-app-frontend Docker image
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          PROJECT_PATH: 'bank-app-frontend/bank-app-frontend'  # Adjust the path to your project
+          IMAGE_NAME: 'thebankappcontainer.azurecr.io'
+        run: |
+          cd $PROJECT_PATH
+          docker build -t $IMAGE_NAME .
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+          docker push $IMAGE_NAME
+          
+      - name: Build and push BankTrackingSystem Docker image
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          PROJECT_PATH: 'BankTrackingSystem'  # Adjust the path to your project
+          IMAGE_NAME: 'thebankappcontainer.azurecr.io'
+        run: |
+          cd $PROJECT_PATH
+          docker build -t $IMAGE_NAME .
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+          docker push $IMAGE_NAME
