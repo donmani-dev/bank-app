@@ -8,11 +8,47 @@ on:
 
 jobs:
 
-  build:
-
+ build-and-push:
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      run: echo "Build the Docker image"
+     
+ # Build and push Docker images for each project
+    - name: Build and push bank-app-frontend Docker image
+      env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          PROJECT_PATH: 'bank-app-frontend/bank-app-frontend'  # Adjust the path to your project
+          IMAGE_NAME: 'thebankappcontainer.azurecr.io'
+      run: |
+          cd $PROJECT_PATH
+          docker build -t $IMAGE_NAME .
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+          docker push $IMAGE_NAME
+          
+    - name: Build and push BankAppBackend Docker image
+      env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          PROJECT_PATH: 'bank-app-backend/BankAppBackend'  # Adjust the path to your project
+          IMAGE_NAME: 'thebankappcontainer.azurecr.io'
+      run: |
+          cd $PROJECT_PATH
+          docker build -t $IMAGE_NAME .
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+          docker push $IMAGE_NAME
+          
+    - name: Build and push BankTrackingSystem Docker image
+      env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          PROJECT_PATH: 'BankTrackingSystem'  # Adjust the path to your project
+          IMAGE_NAME: 'thebankappcontainer.azurecr.io'
+      run: |
+          cd $PROJECT_PATH
+          docker build -t $IMAGE_NAME .
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+          docker push $IMAGE_NAME
