@@ -23,9 +23,8 @@ jobs:
           PROJECT_PATH: 'bank-app-backend/BankAppBackend'  # Adjust the path to your project
           IMAGE_NAME: 'thebankappcontainer.azurecr.io'
       run: |
-          pwd
-          ls -l
           cd $PROJECT_PATH
+          ls -l
           docker build -t $IMAGE_NAME .
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
           docker push $IMAGE_NAME
