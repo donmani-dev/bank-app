@@ -22,6 +22,7 @@ jobs:
           IMAGE_NAME: 'thebankappcontainer.azurecr.io'
       run: |
           pwd
+          ls -l
           cd $PROJECT_PATH
           docker build -t $PROJECT_PATH
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
