@@ -12,36 +12,36 @@ jobs:
 
       - run: echo "Repository code copied to the ${{ github.workspace }}"
 
-      - name: List repository files
-        run: |
-          ls ${{ github.workspace }}
-
-      - name: Build and push BankAppBackend Docker image
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          PROJECT_ROOT_PATH: 'bank-app-backend'
-          DOCKERFILE_PATH: 'BankAppBackend/Dockerfile'
-          IMAGE_NAME: 'thebankappcontainer.azurecr.io/bankappbackend'
-        run: |
-          cd $PROJECT_ROOT_PATH
-          ls -l
-          docker build -f $DOCKERFILE_PATH --force-rm -t $IMAGE_NAME .
-          docker login thebankappcontainer.azurecr.io -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-          docker push $IMAGE_NAME
+      # - name: List repository files
+      #   run: |
+      #     ls ${{ github.workspace }}
+      
+      # - name: Build and push BankAppBackend Docker image
+      #   env:
+      #     DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      #     DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      #     PROJECT_ROOT_PATH: 'bank-app-backend'
+      #     DOCKERFILE_PATH: 'BankAppBackend/Dockerfile'
+      #     IMAGE_NAME: 'thebankappcontainer.azurecr.io/bankappbackend'
+      #   run: |
+      #     cd $PROJECT_ROOT_PATH
+      #     ls -l
+      #     docker build -f $DOCKERFILE_PATH --force-rm -t $IMAGE_NAME .
+      #     docker login thebankappcontainer.azurecr.io -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+      #     docker push $IMAGE_NAME
           
-      - name: Build and push bank-app-frontend Docker image
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          PROJECT_ROOT_PATH: 'bank-app-frontend'
-          DOCKERFILE_PATH: 'bank-app-frontend/Dockerfile'
-          IMAGE_NAME: 'thebankappcontainer.azurecr.io/bankappfrontend'
-        run: |
-          cd $PROJECT_ROOT_PATH
-          docker build -f $DOCKERFILE_PATH --force-rm -t $IMAGE_NAME .
-          docker login thebankappcontainer.azurecr.io -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-          docker push $IMAGE_NAME
+      # - name: Build and push bank-app-frontend Docker image
+      #   env:
+      #     DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      #     DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      #     PROJECT_ROOT_PATH: 'bank-app-frontend'
+      #     DOCKERFILE_PATH: 'bank-app-frontend/Dockerfile'
+      #     IMAGE_NAME: 'thebankappcontainer.azurecr.io/bankappfrontend'
+      #   run: |
+      #     cd $PROJECT_ROOT_PATH
+      #     docker build -f $DOCKERFILE_PATH --force-rm -t $IMAGE_NAME .
+      #     docker login thebankappcontainer.azurecr.io -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+      #     docker push $IMAGE_NAME
           
       - name: Build and push BankTrackingSystem Docker image
         env:
