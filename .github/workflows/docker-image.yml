@@ -20,7 +20,7 @@ jobs:
       env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          PROJECT_PATH: 'bank-app-backend/BankAppBackend/Dockerfile'  # Adjust the path to your project
+          PROJECT_PATH: 'bank-app-backend/BankAppBackend'  # Adjust the path to your project
           IMAGE_NAME: 'thebankappcontainer.azurecr.io'
       run: |
           pwd
