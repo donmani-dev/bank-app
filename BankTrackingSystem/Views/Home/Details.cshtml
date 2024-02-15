@@ -1,0 +1,31 @@
+﻿@model IEnumerable<ApplicantMessagesModel>
+
+@{
+    ViewData["Title"] = "Messages";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            @* <th>ID</th> *@
+            @* <th>Applicant ID</th> *@
+            <th>Messages</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var applicantMessage in (IEnumerable <ApplicantMessagesModel>)ViewData["messages"])
+        {
+            <tr>
+                @* <td>@applicantMessage.Id</td> *@
+                @* <td>@applicantMessage.ApplicantId</td> *@
+                <td>@applicantMessage.Message @if(applicantMessage.accountStatus.Equals(AccountStatus.APPROVED))
+                    {
+                        <a href='@ViewData["connection"]customer/register/@applicantMessage.ApplicantEmailAddress'>Click here to register</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

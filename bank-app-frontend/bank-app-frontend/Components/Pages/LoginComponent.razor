@@ -1,0 +1,73 @@
+﻿@page "/login";
+@using bank_app_frontend.Components.Layout
+@layout ApplicationFormLayout;
+@using Models;
+@using Services;
+@inject UserService userService;
+@inject NavigationManager navigationManager;
+<section class="vh-100" style="background-color: #508bfc;">
+    <div class="container-flex py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                <form class="card shadow-2-strong" style="border-radius: 1rem;" @onsubmit="submitData">
+                    <div class="card-body p-5">
+
+                        <h3 class="mb-5 text-center">Login Form</h3>
+
+                        <div class="form-outline mb-4">
+                            <label class="form-label" for="typeEmailX-2">Email*</label>
+                            <input type="email" class="form-control form-control-lg border border-secondary" @bind="user.Email" required/>
+                        </div>
+
+                        <div class="form-outline mb-4">
+                            <label class="form-label" for="typePasswordX-2">Password*</label>
+                            <input type="password" id="typePasswordX-2" class="form-control form-control-lg border border-secondary" @bind="user.Password" required/>
+                        </div>
+
+                        <div class="form-outline mb-4">
+                            <label class="form-label" for="typePasswordX-2">User Type*</label>
+                            <select id="inputState" class="form-select" @bind="user.UserType">
+                                <option value="@UserType.TELLER" selected>Teller</option>
+                                <option value="@UserType.CUSTOMER">Customer</option>
+                            </select>
+                        </div>
+
+                        <!-- Checkbox -->
+                        <div class="text-center">
+                            <button class="btn btn-primary" type="submit">Login</button>
+                        </div>
+
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+@code {
+    User user;
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        user = new User();
+    }
+
+    private async Task submitData()
+    {
+        object response = await userService.LoginUser<object>(user);
+        if(response!=null)
+        {
+            if(response is Teller)
+            {
+                navigationManager.NavigateTo("teller/approval");
+            }
+            else
+            {
+                navigationManager.NavigateTo("Dashboard");
+            }
+
+        }
+    }
+
+}

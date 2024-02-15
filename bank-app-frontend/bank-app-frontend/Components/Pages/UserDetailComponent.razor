@@ -1,0 +1,77 @@
+﻿@page "/customer/detail"
+@using Models;
+@using Services;
+@inject ApplicantService applicantService;
+<div class="container mt-5">
+    <div class="row d-flex justify-content-center">
+        @if(applicant!=null)
+        {
+            <div class="card col-xl-7 col-md-12 shadow bg-white rounded">
+                <div class="row ml-0 mr-0">
+                    <div class="col-sm-4 text-bg-primary p-5">
+                        <div class="card-block text-center text-white">
+                            
+                                <img src="https://img.icons8.com/bubbles/100/000000/user.png" class="img-radius"
+                                     alt="User-Profile-Image">
+
+                            <h6 class="font-weight-bold">@applicant.ApplicateName</h6>
+                            <p>Customer</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-8">
+                        <div class="card-block p-5">
+                            <h6 class="text-dark text-center">Customer Information</h6>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <p class="text-dark">Email</p>
+                                    <h6 class="text-muted">@applicant.EmailAddress</h6>
+                                </div>
+                                <div class="col-sm-6">
+                                    <p class="text-dark">CNIC</p>
+                                    <h6 class="text-muted">@applicant.CNIC</h6>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <p class="text-dark">Address</p>
+                                    <h6 class="text-muted">@applicant.Address</h6>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <p class="text-dark">Date of Birth</p>
+                                    <h6 class="text-muted">@applicant.DOB.ToString("dd/MM/yyyy")</h6>
+                                </div>
+                                <div class="col-sm-6">
+                                    <p class="text-dark">User Name</p>
+                                    <h6 class="text-muted">@applicant?.Customer?.UserName</h6>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+    </div>
+
+</div>
+
+@code {
+    Applicant applicant;
+    bool dataLoading = false;
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await GetUserDetails();
+    }
+
+    private async Task GetUserDetails()
+    {
+        dataLoading = true;
+        applicant = await applicantService.GetApplicantById(1);
+        dataLoading = false;
+    }
+}

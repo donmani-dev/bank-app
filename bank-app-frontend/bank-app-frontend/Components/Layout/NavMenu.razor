@@ -1,0 +1,115 @@
+﻿@using Models;
+@using Services;
+@using Blazored.LocalStorage;
+@using bank;
+@using Newtonsoft.Json;
+@inject ILocalStorageService localStorageService;
+@inject NavigationManager navigationManager;
+@inject UserService userService;
+<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand">Banking App</a>
+    </div>
+</div>
+
+<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+
+<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
+    <nav class="flex-column">
+
+
+        @if(applicantDetails!= null || tellerDetails!=null)
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link">
+                     Logged in User:
+                    @(userType == UserType.TELLER ? tellerDetails?.Name : applicantDetails?.ApplicateName)
+                </NavLink>
+            </div>
+        }
+
+
+        @if (userType == UserType.TELLER)
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="teller/approval">
+                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Applicants
+                </NavLink>
+            </div>
+        }
+        else
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="Dashboard">
+                    <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Dashboard
+                </NavLink>
+            </div>
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="customer/detail">
+                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Detail
+                </NavLink>
+            </div>
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="customer/transaction">
+                    <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Transaction
+                </NavLink>
+            </div>
+        }
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" @onclick="()=>NavigateToLoginPage()">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Logout
+            </NavLink>
+        </div>
+
+
+
+    </nav>
+</div>
+@code {
+    object userDetails;
+    UserType userType;
+    Applicant applicantDetails;
+    Teller tellerDetails;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            if (!await localStorageService.ContainKeyAsync(Constants.USER_DETAIL_LOCAL_STORAGE_KEY) &&
+            !await localStorageService.ContainKeyAsync(Constants.USER_TYPE_LOCAL_STORAGE_KEY))
+            {
+                navigationManager.NavigateTo("/login");
+            }
+            else
+            {
+                string userTypeResponse = await localStorageService.GetItemAsStringAsync(Constants.USER_TYPE_LOCAL_STORAGE_KEY);
+                userDetails = await localStorageService.GetItemAsync<object>(Constants.USER_DETAIL_LOCAL_STORAGE_KEY);
+                userType = userTypeResponse == UserType.CUSTOMER.ToString() ? UserType.CUSTOMER : UserType.TELLER;
+                if (userType.Equals(UserType.CUSTOMER))
+                {
+                    applicantDetails = JsonConvert.DeserializeObject<Applicant>(userDetails.ToString());
+                }
+                else
+                {
+                    tellerDetails = JsonConvert.DeserializeObject<Teller>(userDetails.ToString());
+                }
+                StateHasChanged();
+            }
+        }
+    }
+    private async Task NavigateToLoginPage()
+    {
+        await localStorageService.RemoveItemAsync(Constants.USER_TYPE_LOCAL_STORAGE_KEY);
+        await localStorageService.RemoveItemAsync(Constants.USER_DETAIL_LOCAL_STORAGE_KEY);
+        navigationManager.NavigateTo("login");
+    }
+
+}
+

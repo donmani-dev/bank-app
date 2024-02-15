@@ -1,0 +1,137 @@
+﻿@page "/teller/approval"
+@using Models;
+@using Services;
+@inject TellerService tellerService;
+@inject ApplicantService applicantService;
+<h3 class="text-center">Account Opening Requests</h3>
+@if (isApplicantsListLoading)
+{
+    <div class="d-flex justify-content-center">
+        <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    </div>
+}
+else if (applicantsList.Count() == 0)
+{
+    <h6 class="text-center">No pending applicant available</h6>
+}
+else
+{
+    if (isApplicantStatusCallLoading)
+    {
+        <div class="d-flex justify-content-center">
+            <div class="spinner-border" style="width: 3rem; height: 3rem;" role="status">
+                <span class="sr-only"></span>
+            </div>
+        </div>
+    }
+
+    <div class="p-4 m-4">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th class="col-1">Id</th>
+                    <th class="col-2">Name</th>
+                    <th class="col-2">CNIC</th>
+                    <th class="col-2">Account Type</th>
+                    <th class="col-3">Operation</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var applicant in applicantsList)
+                {
+                    <tr>
+                        <td>@applicant.Id</td>
+                        <td>@applicant.ApplicateName</td>
+                        <td>@applicant.CNIC</td>
+                        <td>@applicant.AccountType</td>
+                        <td class="text-center">
+                            <Button Color="ButtonColor.Success" @onclick="()=>UpdateApplicantStatus(applicant.Id,AccountStatus.APPROVED,1)"
+                                    class="@(isApplicantStatusCallLoading ? "disabled" : "")">
+                                Approve
+                            </Button>
+                            <Button Color="ButtonColor.Danger" @onclick="()=>UpdateApplicantStatus(applicant.Id,AccountStatus.DENIED,1)"
+                                    class="@(isApplicantStatusCallLoading ? "disabled" : "")">
+                                Reject
+                            </Button>
+                            <Button Color="ButtonColor.Info" @onclick="() => ShowEmployeeComponent(applicant)"
+                                    class="@(isApplicantStatusCallLoading ? "disabled" : "")">
+                                View Details
+                            </Button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+    </div>
+
+    <Modal @ref="modal" Title="Applicant Details" IsVerticallyCentered="true">
+        <BodyTemplate>
+            <div class="row">
+                <div class="col-5 col-md-4 text-center">Name:</div>
+                <div class="col-7 col-md-5">@modalApplicant.ApplicateName</div>
+            </div>
+            <div class="row">
+                <div class="col-5 col-md-4 text-center">Email:</div>
+                <div class="col-7 col-md-5">@modalApplicant.EmailAddress</div>
+            </div>
+            <div class="row">
+                <div class="col-5 col-md-4 text-center">CNIC:</div>
+                <div class="col-7 col-md-5">@modalApplicant.CNIC</div>
+            </div>
+            <div class="row">
+                <div class="col-5 col-md-4 text-center">Date of birth:</div>
+                <div class="col-7 col-md-5">@modalApplicant.DOB</div>
+            </div>
+            <div class="row">
+                <div class="col-5 col-md-4 text-center">Account Type:</div>
+                <div class="col-7 col-md-5">@modalApplicant.AccountType</div>
+            </div>
+            <div class="row">
+                <div class="col-5 col-md-4 text-center">Address:</div>
+                <div class="col-7 col-md-5">@modalApplicant.Address</div>
+            </div>
+        </BodyTemplate>
+    </Modal>
+}
+
+
+@code {
+    public Modal modal = default!;
+    IEnumerable<Applicant> applicantsList = null;
+    Applicant modalApplicant = null;
+    bool isApplicantsListLoading = false;
+    bool isApplicantStatusCallLoading = false;
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await getPendingApplicantsList();
+    }
+
+
+    private async Task getPendingApplicantsList()
+    {
+        isApplicantsListLoading = true;
+        applicantsList = await applicantService.GetApplicantsList();
+        applicantsList = applicantsList.Where(app => app.AccountStatus.Equals(AccountStatus.PENDING)).Select(app => app);
+        isApplicantsListLoading = false;
+    }
+
+    public async Task UpdateApplicantStatus(long applicantId, AccountStatus accountStatus, long tellerId)
+    {
+        isApplicantStatusCallLoading = true;
+        await tellerService.UpdateApplicantStatusAsync(applicantId, accountStatus, tellerId);
+        await getPendingApplicantsList();
+        isApplicantStatusCallLoading = false;
+    }
+
+    private async Task ShowEmployeeComponent(Applicant applicant)
+    {
+        modalApplicant = applicant;
+        await modal.ShowAsync();
+    }
+
+}

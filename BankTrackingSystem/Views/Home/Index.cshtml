@@ -1,0 +1,15 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-3">Track My Application</h1>
+
+    <form method="post" asp-controller="Home" asp-action="Details" class="mt-3">
+        <div class="mb-3">
+            <label for="textBoxInput" class="form-label">Enter Your Email Address:</label>
+            <input class="form-control" id="textBoxInput" name="emailAddress">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>

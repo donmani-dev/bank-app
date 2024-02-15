@@ -1,0 +1,88 @@
+﻿@page "/Dashboard"
+@using Models
+@using Services
+@inject CustomerService customerService;
+@inject AccountService accountService;
+@inject UserService userService;
+
+<PageTitle>Dashboard</PageTitle>
+
+<h2>Dashboard</h2>
+
+<div class="d-flex justify-content-center">
+    <Card Color="CardColor.Primary" Class="mb-4 text-center" Style="width:30rem;">
+        <CardBody>
+            <CardTitle class="text-dark">@applicant.ApplicateName?.ToUpper()</CardTitle>
+                <CardText class="text-warning">Rs.@account.Balance</CardText>
+                <CardText>@account.AccountType - @account.AccountId</CardText>
+                <CardText>@applicant.Address</CardText>
+            </CardBody>
+        </Card>
+    </div>
+@if (transactions != null)
+{
+    <div class="p-4 m-4">
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th class="col-1">Id</th>
+                    <th class="col-2">Transaction Type</th>
+                    <th class="col-2">Amount</th>
+                    <th class="col-2">Date Time</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var txn in transactions)
+                {
+                    <tr>
+                        <td>@txn.TransactionId</td>
+                        <td>@txn.TransactionType</td>
+                        <td>@txn.Amount</td>
+                        <td>@txn.DateTime</td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+    </div>
+    
+}
+
+@code
+{
+    Account account = new Account();
+    Customer customer = new Customer();
+    Applicant applicant = new Applicant();
+    IEnumerable<Transaction> transactions = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+    }
+
+    private async Task getAccountDetails()
+    {
+        account = await this.customerService.GetAccountByCustomerId(applicant.Customer.CustomerId);
+        await getAccountTransactions(account.AccountId);
+        customer = account.Customer;
+        applicant = customer.Applicant;
+    }
+
+    private async Task getAccountTransactions(Guid id)
+    {
+        transactions = await this.accountService.GetAccountTransactionsByAccountId(account.AccountId);
+    }
+
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(firstRender)
+        {
+            applicant = await userService.GetCustomerDetailFromLocalStorage();
+            await getAccountDetails();
+            StateHasChanged();
+        }
+    }
+    
+}

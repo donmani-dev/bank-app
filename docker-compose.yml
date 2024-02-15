@@ -1,0 +1,43 @@
+version: '3.4'
+
+services:
+  bankappbackend:
+    image: bankappbackend:latest
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+    ports:
+      - "9900:8080" 
+      - "9902:8081"
+    depends_on:
+      - redis-bank
+      - sql
+
+  banktrackingsystem:
+    image: banktrackingsystem:latest
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+    ports:
+      - "9901:8080"
+    depends_on:
+      - redis-bank
+ 
+  bank-app-frontend:
+    image: bankappfrontend:latest
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+    ports:
+      - "9903:8080"
+ 
+  sql:
+    image: mcr.microsoft.com/mssql/server
+    container_name: sqlserver
+    environment:
+      SA_PASSWORD: "YourStrong@Passw0rd"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+
+  redis-bank:
+    image: redis:latest
+    ports:
+      - "6379:6379"
