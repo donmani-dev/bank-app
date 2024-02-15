@@ -21,8 +21,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    
+    # Build the Docker image
+    - name: Build the Docker image
+      run: echo "Build the Docker image"
      
- # Build and push Docker images for each project
+    # Build and push Docker images for each project
     - name: Build and push bank-app-frontend Docker image
       env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
@@ -31,9 +35,9 @@ jobs:
           IMAGE_NAME: 'thebankappcontainer.azurecr.io'
       run: |
           cd $PROJECT_PATH
-          docker build -t $IMAGE_NAME .
+          docker build -t $IMAGE_NAME . || exit 1  # Add error handling
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-          docker push $IMAGE_NAME
+          docker push $IMAGE_NAME || exit 1  # Add error handling
           
     - name: Build and push BankAppBackend Docker image
       env:
@@ -43,9 +47,9 @@ jobs:
           IMAGE_NAME: 'thebankappcontainer.azurecr.io'
       run: |
           cd $PROJECT_PATH
-          docker build -t $IMAGE_NAME .
+          docker build -t $IMAGE_NAME . || exit 1  # Add error handling
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-          docker push $IMAGE_NAME
+          docker push $IMAGE_NAME || exit 1  # Add error handling
           
     - name: Build and push BankTrackingSystem Docker image
       env:
@@ -55,6 +59,6 @@ jobs:
           IMAGE_NAME: 'thebankappcontainer.azurecr.io'
       run: |
           cd $PROJECT_PATH
-          docker build -t $IMAGE_NAME .
+          docker build -t $IMAGE_NAME . || exit 1  # Add error handling
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-          docker push $IMAGE_NAME
+          docker push $IMAGE_NAME || exit 1  # Add error handling
