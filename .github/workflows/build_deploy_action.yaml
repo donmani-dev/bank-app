@@ -51,6 +51,7 @@ jobs:
           DOCKERFILE_PATH: 'BankTrackingSystem/Dockerfile'
           IMAGE_NAME: 'thebankappcontainer.azurecr.io/banktrackingsystem'
         run: |
+          cd $PROJECT_ROOT_PATH
           ls -l
           pwd
           docker build -f $DOCKERFILE_PATH --force-rm -t $IMAGE_NAME .
