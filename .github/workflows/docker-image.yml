@@ -26,7 +26,7 @@ jobs:
           cd $PROJECT_PATH
           pwd
           ls -l
-          docker buildx build -t IMAGE_NAME /home/runner/work/bank-app/bank-app/bank-app-backend/BankAppBackend
+          docker buildx build -t thebankappcontainer.azurecr.io/bank-app-backend:latest /home/runner/work/bank-app/bank-app/bank-app-backend/BankAppBackend
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
           docker push $IMAGE_NAME
     - name: Build and push bank-app-frontend Docker image
