@@ -12,6 +12,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2 
      
  # Build and push Docker images for each project
     - name: Build and push BankAppBackend Docker image
