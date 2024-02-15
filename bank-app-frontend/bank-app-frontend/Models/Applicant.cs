@@ -18,7 +18,7 @@ namespace Models
         public string Address { get; set; }
         public string CNIC { get; set; }
         public string EmailAddress { get; set; }
-        public DateOnly DOB { get; set; } // Change DateOnly to DateTime
+        public DateOnly DOB { get; set; } 
         public AccountType AccountType { get; set; }
         public AccountStatus AccountStatus { get; set; } = AccountStatus.PENDING;
         public long? TellerId { get; set; }
