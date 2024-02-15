@@ -51,6 +51,7 @@ jobs:
           DOCKERFILE_PATH: 'Dockerfile'
           IMAGE_NAME: 'thebankappcontainer.azurecr.io/banktrackingsystem'
         run: |
+          cd $PROJECT_ROOT_PATH
           docker build -f $DOCKERFILE_PATH --force-rm -t $IMAGE_NAME .
           docker login thebankappcontainer.azurecr.io -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
           docker push $IMAGE_NAME
