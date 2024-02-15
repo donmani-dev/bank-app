@@ -1,4 +1,4 @@
-name: CI-build-and-push-image-for-dotnetapp
+name: build-and-push-image-for-dotnetapp
 
 on:
   push:
