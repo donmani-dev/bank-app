@@ -1,0 +1,17 @@
+name: GitHub Actions to Build & Deploy
+on: push
+jobs:
+  Build_Actions_Job:
+    name: Exploring Building Docker Images
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "This job was triggered by a ${{ github.event_name }} event"
+
+      - name: Check out bank-app respository
+        uses: actions/checkout@v2
+
+      - run: echo "Repository code copied to the ${{ github.workspace }}"
+
+      - name: List repository files
+        run: |
+          ls ${{ github.workspace }}
