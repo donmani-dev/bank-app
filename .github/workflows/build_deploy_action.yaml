@@ -21,7 +21,7 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
           PROJECT_ROOT_PATH: 'bank-app-backend'
-          DOCKERFILE_PATH: 'bank-app-backend/BankAppBackend/Dockerfile'
+          DOCKERFILE_PATH: 'BankAppBackend/Dockerfile'
           IMAGE_NAME: 'thebankappcontainer.azurecr.io'
         run: |
           cd $PROJECT_ROOT_PATH
