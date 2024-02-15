@@ -24,6 +24,7 @@ jobs:
           IMAGE_NAME: 'thebankappcontainer.azurecr.io'
         run: |
           cd $PROJECT_PATH
+          ls -l
           docker build -f "Dockerfile" --force-rm -t thebankappcontainer.azurecr.io/bankappbackend .
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
           docker push $IMAGE_NAME
