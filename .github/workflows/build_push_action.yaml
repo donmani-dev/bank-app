@@ -68,5 +68,6 @@ jobs:
         uses: Azure/webapps-deploy@v3.0.0
         with:
           app-name: $AZURE_WEBAPP_NAME
+          slot-name: 'development'
           publish-profile: ${{ secrets.azureWebAppPublishProfile }}
-          images: 'thebankappcontainer.azurecr.io/banktrackingsystem'
+          images: 'thebankappcontainer.azurecr.io/bankappfrontend'
