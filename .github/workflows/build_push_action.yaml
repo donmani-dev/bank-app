@@ -66,9 +66,9 @@ jobs:
 
       - name: Build and push TestMVCApp
         run: |
-          cd 'TestMVCApp'
+          # cd 'TestMVCApp'
           ls -l
-          docker build -f 'Dockerfile' --force-rm -t thebankappcontainer.azurecr.io/banktrackingsystem:${{ github.sha }} .
+          docker build -f 'Dockerfile' --force-rm -t thebankappcontainer.azurecr.io/banktrackingsystem:${{ github.sha }} 'TestMVCApp'
           docker login thebankappcontainer.azurecr.io -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
           docker push thebankappcontainer.azurecr.io/banktrackingsystem:${{ github.sha }}
 
