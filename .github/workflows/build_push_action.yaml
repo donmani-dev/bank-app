@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 env:
-  AZURE_WEBAPP_NAME: 'dotnettrainingbankapp'
+  AZURE_WEBAPP_NAME: 'dotnettrainingbankapp/development'
 
 jobs:
   Build_Actions_Job:
