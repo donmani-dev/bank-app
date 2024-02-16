@@ -51,29 +51,29 @@ jobs:
       #     docker login thebankappcontainer.azurecr.io -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
       #     docker push $IMAGE_NAME
           
-      # - name: Build and push BankTrackingSystem Docker image
-      #   env:
-      #     DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      #     DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      #     PROJECT_ROOT_PATH: 'BankTrackingSystem'
-      #     DOCKERFILE_PATH: 'Dockerfile'
-      #     IMAGE_NAME: 'thebankappcontainer.azurecr.io/banktrackingsystem'
-      #   run: |
-      #     cd $PROJECT_ROOT_PATH
-      #     docker build -f $DOCKERFILE_PATH --force-rm -t $IMAGE_NAME .
-      #     docker login thebankappcontainer.azurecr.io -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-      #     docker push $IMAGE_NAME
-
-      - name: Build and push TestMVCApp
+      - name: Build and push BankTrackingSystem Docker image
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          PROJECT_ROOT_PATH: 'BankTrackingSystem'
+          DOCKERFILE_PATH: 'Dockerfile'
+          IMAGE_NAME: 'thebankappcontainer.azurecr.io/banktrackingsystem:${{ github.sha }}'
         run: |
-          # cd 'TestMVCApp'
-          ls -l
-          docker build -f 'TestMVCApp/Dockerfile' --force-rm -t thebankappcontainer.azurecr.io/banktrackingsystem:${{ github.sha }} .
+          cd $PROJECT_ROOT_PATH
+          docker build -f $DOCKERFILE_PATH --force-rm -t $IMAGE_NAME .
           docker login thebankappcontainer.azurecr.io -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-          docker push thebankappcontainer.azurecr.io/banktrackingsystem:${{ github.sha }}
+          docker push $IMAGE_NAME
+
+      # - name: Build and push TestMVCApp
+      #   env:
+      #     DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      #     DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      #   run: |
+      #     # cd 'TestMVCApp'
+      #     ls -l
+      #     docker build -f 'TestMVCApp/Dockerfile' --force-rm -t thebankappcontainer.azurecr.io/testmvcapp:${{ github.sha }} .
+      #     docker login thebankappcontainer.azurecr.io -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+      #     docker push thebankappcontainer.azurecr.io/testmvcapp:${{ github.sha }}
 
       - name: Deploy to Azure App Service
         uses: Azure/webapps-deploy@v3.0.0
