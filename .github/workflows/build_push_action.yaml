@@ -81,3 +81,4 @@ jobs:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.azureWebAppPublishProfileProduction }}
           images: 'thebankappcontainer.azurecr.io/banktrackingsystem:${{ github.sha }}'
+          restart: true
