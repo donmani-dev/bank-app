@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 env:
-  AZURE_WEBAPP_NAME: 'dotnettrainingbankapp/development'
+  AZURE_WEBAPP_NAME: 'dotnettrainingbankapp'
 
 jobs:
   Build_Actions_Job:
@@ -68,6 +68,5 @@ jobs:
         uses: Azure/webapps-deploy@v3.0.0
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          slot-name: 'development'
-          publish-profile: ${{ secrets.azureWebAppPublishProfile }}
+          publish-profile: ${{ secrets.azureWebAppPublishProfileProduction }}
           images: 'thebankappcontainer.azurecr.io/bankappfrontend'
