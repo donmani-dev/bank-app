@@ -5,7 +5,10 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-    
+
+env:
+  AZURE_WEBAPP_NAME: 'dotnettrainingbankapp'
+
 jobs:
   Build_Actions_Job:
     name: Build & Push BankAppBackend, BankTrackingSystem, BankAppFrontend
@@ -60,3 +63,10 @@ jobs:
           docker build -f $DOCKERFILE_PATH --force-rm -t $IMAGE_NAME .
           docker login thebankappcontainer.azurecr.io -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
           docker push $IMAGE_NAME
+
+      - name: Deploy to Azure App Service
+        uses: Azure/webapps-deploy@v3.0.0
+        with:
+          app-name: $AZURE_WEBAPP_NAME
+          publish-profile: ${{ secrets.azureWebAppPublishProfile }}
+          images: 'thebankappcontainer.azurecr.io/banktrackingsystem'
