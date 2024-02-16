@@ -65,6 +65,9 @@ jobs:
       #     docker push $IMAGE_NAME
 
       - name: Build and push TestMVCApp
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: |
           # cd 'TestMVCApp'
           ls -l
