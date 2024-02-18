@@ -82,3 +82,14 @@ jobs:
       #     publish-profile: ${{ secrets.azureWebAppPublishProfileProduction }}
       #     images: ${{ env.FRONTEND_APP_IMAGE_NAME }}
       #     restart: true
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_SUBSCRIPTION }}
+
+      - name: Azure CLI Script
+        uses: azure/CLI@v1
+        with:
+          azcliversion: latest
+          inlineScript: |
+            az account show
