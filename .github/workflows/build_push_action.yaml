@@ -9,6 +9,7 @@ on:
 env:
   AZURE_WEBAPP_NAME: 'dotnettrainingbankapp'
   FRONTEND_APP_IMAGE_NAME: 'thebankappcontainer.azurecr.io/bankappfrontend:${{ github.sha }}'
+  TRACKING_SYSTEM_APP_IMAGE_NAME: 'thebankappcontainer.azurecr.io/banktrackingsystem:${{ github.sha }}'
 
 jobs:
   Build_Actions_Job:
