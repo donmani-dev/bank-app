@@ -88,12 +88,12 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_SUBSCRIPTION }}
 
-      # - name: Azure CLI Script
-      #   uses: azure/CLI@v1
-      #   with:
-      #     azcliversion: latest
-      #     inlineScript: |
-      #       az account show
+      - name: Azure CLI Script
+        uses: azure/CLI@v1
+        with:
+          azcliversion: latest
+          inlineScript: |
+            az account show
 
       - name: Build and deploy Container App
         uses: azure/container-apps-deploy-action@v1
