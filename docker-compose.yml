@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   bankappbackend:
-    image: bankappbackend:latest
+    image: bankingappregistery.azurecr.io/bankappbackend:latest
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
     ports:
@@ -11,22 +11,29 @@ services:
     depends_on:
       - redis-bank
       - sql
+    networks:
+      - bank-network
 
   banktrackingsystem:
-    image: banktrackingsystem:latest
+    image: bankingappregistery.azurecr.io/banktrackingsystem:latest
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
     ports:
       - "9901:8080"
     depends_on:
       - redis-bank
+    networks:
+      - bank-network
  
   bank-app-frontend:
-    image: bankappfrontend:latest
+    image: bankingappregistery.azurecr.io/bankappfrontend:latest
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
+      - FrontEndConnection=http://172.210.50.229:9900
     ports:
       - "9903:8080"
+    networks:
+      - bank-network
  
   sql:
     image: mcr.microsoft.com/mssql/server
@@ -36,8 +43,16 @@ services:
       ACCEPT_EULA: "Y"
     ports:
       - "1433:1433"
+    networks:
+      - bank-network
 
   redis-bank:
     image: redis:latest
     ports:
       - "6379:6379"
+    networks:
+      - bank-network
+      
+networks:
+  bank-network:
+    driver: bridge

@@ -13,7 +13,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 builder.Services.AddHttpClient<HttpClientService>(client =>
 {
-    client.BaseAddress = new Uri(builder.Configuration.GetConnectionString("FrontEndConnection"));
+    client.BaseAddress = new Uri(uriString: Environment.GetEnvironmentVariable("FrontEndConnection") ?? builder.Configuration.GetConnectionString("FrontEndConnection"));
 });
 builder.Services.AddScoped<ApplicantService>();
 builder.Services.AddScoped<TellerService>();

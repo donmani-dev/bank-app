@@ -30,7 +30,7 @@ public class HomeController : Controller
         _configuration.GetSection(ConnectionStringsOptions.ConnectionStrings).Bind(connectionStringsOptions);
         var messages = await _applicantMessagesRespository.GetAllAgainstEmailAddress(emailAddress);
         ViewData["messages"] = messages;
-        ViewData["connection"] = new System.Uri(connectionStringsOptions.FrontEndConnectionString);
+        ViewData["connection"] = new System.Uri(Environment.GetEnvironmentVariable("FrontEndConnectionString") ?? connectionStringsOptions.FrontEndConnectionString);
         return View();
     }
 
