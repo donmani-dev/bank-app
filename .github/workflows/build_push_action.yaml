@@ -101,4 +101,7 @@ jobs:
           resourceGroup: myResourceGroup
           containerAppEnvironment: bank-environment
           containerAppName: bank-tracking-system
+          acrName: thebankappcontainer
+          acrUsername: ${{ secrets.DOCKER_USERNAME }}
+          acrPassword: ${{ secrets.DOCKER_PASSWORD }}
           imageToDeploy: thebankappcontainer.azurecr.io/banktrackingsystem:${{ github.sha }}
