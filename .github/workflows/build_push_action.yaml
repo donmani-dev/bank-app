@@ -95,6 +95,17 @@ jobs:
           inlineScript: |
             az account show
 
+      - name: Deploy Sql Server
+        uses: azure/container-apps-deploy-action@v1
+        with:
+          resourceGroup: myResourceGroup
+          containerAppEnvironment: bank-environment
+          containerAppName: bank-app-sql
+          imageToDeploy: mcr.microsoft.com/mssql/server:2022-latest
+          environmentVariables:
+            ACCEPT_EULA=Y
+            SA_PASSWORD=YourStrong@Passw0rd
+
       - name: Deploy Container App
         uses: azure/container-apps-deploy-action@v1
         with:
@@ -105,5 +116,4 @@ jobs:
           acrUsername: ${{ secrets.DOCKER_USERNAME }}
           acrPassword: ${{ secrets.DOCKER_PASSWORD }}
           imageToDeploy: ${{ env.FRONTEND_APP_IMAGE_NAME }}
-          exposedPort: 8080
           targetPort: 8080
