@@ -18,6 +18,7 @@ services:
     image: bankingappregistery.azurecr.io/banktrackingsystem:latest
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
+      - FrontEndConnectionString=http://bank-app-frontend:8080
     ports:
       - "9901:8080"
     depends_on:
@@ -29,7 +30,7 @@ services:
     image: bankingappregistery.azurecr.io/bankappfrontend:latest
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - FrontEndConnection=http://172.210.50.229:9900
+      - BackEndConnection=http://bankappbackend:8080
     ports:
       - "9903:8080"
     networks:
