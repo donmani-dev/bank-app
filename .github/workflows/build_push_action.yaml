@@ -99,5 +99,5 @@ jobs:
         uses: azure/container-apps-deploy-action@v1
         with:
           resourceGroup: myResourceGroup
-          containerAppName: tracking-system
           imageToDeploy: thebankappcontainer.azurecr.io/banktrackingsystem:${{ github.sha }}
+          containerAppName: tracking-system
