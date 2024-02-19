@@ -107,6 +107,7 @@ jobs:
           containerAppName: bank-app-sql
           imageToDeploy: mcr.microsoft.com/mssql/server:2022-latest
           ingress: internal
+          targetPort: 1433
           environmentVariables:
             ACCEPT_EULA=Y
             SA_PASSWORD=YourStrong@Passw0rd
@@ -119,6 +120,7 @@ jobs:
           containerAppName: bank-app-redis
           imageToDeploy: redis:latest
           ingress: internal
+          targetPort: 6379
 
       - name: Deploy Frontend Container App
         uses: azure/container-apps-deploy-action@v1
