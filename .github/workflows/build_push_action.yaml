@@ -147,10 +147,10 @@ jobs:
           acrUsername: ${{ secrets.DOCKER_USERNAME }}
           acrPassword: ${{ secrets.DOCKER_PASSWORD }}
           imageToDeploy: ${{ env.BACKEND_APP_IMAGE_NAME }}
-          targetPort: 8080
+          targetPort: 8081
           environmentVariables:
             ASPNETCORE_ENVIRONMENT=Production
-            RedisConnectionString=http://bank-app-redis
+            RedisConnectionString=bank-app-redis.redis.cache.windows.net:6380,password=HEnwEciMkBHZ7YfkcyLe0VRMKEFh7XPR7AzCaOlFdnk=,ssl=True,abortConnect=False
             SQLConnectionString=http://bank-app-sql
 
       - name: Deploy Tracking Container App
@@ -163,9 +163,9 @@ jobs:
           acrUsername: ${{ secrets.DOCKER_USERNAME }}
           acrPassword: ${{ secrets.DOCKER_PASSWORD }}
           imageToDeploy: ${{ env.TRACKING_SYSTEM_APP_IMAGE_NAME }}
-          targetPort: 8080
+          targetPort: 8082
           environmentVariables:
             FrontEndConnectionString=http://bank-app-frontend
             ASPNETCORE_ENVIRONMENT=Production
-            RedisConnectionString=http://bank-app-redis
+            RedisConnectionString=bank-app-redis.redis.cache.windows.net:6380,password=HEnwEciMkBHZ7YfkcyLe0VRMKEFh7XPR7AzCaOlFdnk=,ssl=True,abortConnect=False
 
