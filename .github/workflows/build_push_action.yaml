@@ -105,3 +105,5 @@ jobs:
           acrUsername: ${{ secrets.DOCKER_USERNAME }}
           acrPassword: ${{ secrets.DOCKER_PASSWORD }}
           imageToDeploy: ${{ env.FRONTEND_APP_IMAGE_NAME }}
+          exposedPort: 8080
+          targetPort: 8080
