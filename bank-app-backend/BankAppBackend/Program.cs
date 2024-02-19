@@ -28,7 +28,8 @@ builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<IRedisMessagePublisherService, RedisMessagePublisherService>();
 
-string connectionString = builder.Configuration.GetConnectionString("SQLConnectionString") ?? throw new InvalidOperationException("Connection string of name SQLConnectionString not found");
+string connectionString = Environment.GetEnvironmentVariable("SQLConnectionString") ?? builder.Configuration.GetConnectionString("SQLConnectionString")
+//string connectionString = builder.Configuration.GetConnectionString("SQLConnectionString") ?? throw new InvalidOperationException("Connection string of name SQLConnectionString not found");
 builder.Services.AddDbContext<DatabaseContext>(conn => conn.UseSqlServer(connectionString));
 // Apply migrations
 var app = builder.Build();

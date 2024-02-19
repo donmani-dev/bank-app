@@ -150,6 +150,8 @@ jobs:
           targetPort: 8080
           environmentVariables:
             ASPNETCORE_ENVIRONMENT=Production
+            RedisConnectionString=http://bank-app-redis
+            SQLConnectionString=http://bank-app-sql
 
       - name: Deploy Tracking Container App
         uses: azure/container-apps-deploy-action@v1
@@ -165,4 +167,5 @@ jobs:
           environmentVariables:
             FrontEndConnectionString=http://bank-app-frontend
             ASPNETCORE_ENVIRONMENT=Production
+            RedisConnectionString=http://bank-app-redis
 

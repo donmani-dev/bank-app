@@ -27,7 +27,7 @@ namespace BankAppBackend.Service
             ConnectionStringsOptions connectionStringsOptions = new ConnectionStringsOptions();
             Configuration.GetSection(ConnectionStringsOptions.ConnectionStrings).Bind(connectionStringsOptions);
 
-            return ConnectionMultiplexer.Connect(connectionStringsOptions.RedisConnectionString);
+            return ConnectionMultiplexer.Connect(new System.Uri(Environment.GetEnvironmentVariable("RedisConnectionString") ?? connectionStringsOptions.RedisConnectionString));
         }
 
         public async Task sendMessage(ApplicantMessagesModel applicantMessagesModel)
