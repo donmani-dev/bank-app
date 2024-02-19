@@ -132,7 +132,7 @@ jobs:
           imageToDeploy: ${{ env.FRONTEND_APP_IMAGE_NAME }}
           targetPort: 8080
           environmentVariables:
-            BackEndConnection=bank-app-backend
+            BackEndConnection=http://bank-app-backend
             ASPNETCORE_ENVIRONMENT=Production
 
       - name: Deploy Backend Container App
@@ -161,6 +161,6 @@ jobs:
           imageToDeploy: ${{ env.TRACKING_SYSTEM_APP_IMAGE_NAME }}
           targetPort: 8080
           environmentVariables:
-            FrontEndConnectionString='http://bank-app-frontend'
+            FrontEndConnectionString=http://bank-app-frontend
             ASPNETCORE_ENVIRONMENT=Production
 
