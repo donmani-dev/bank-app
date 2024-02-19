@@ -100,4 +100,4 @@ jobs:
         with:
           resourceGroup: myResourceGroup
           imageToDeploy: thebankappcontainer.azurecr.io/banktrackingsystem:${{ github.sha }}
-          containerAppName: tracking-system
+          containerAppName: bank-tracking-system
