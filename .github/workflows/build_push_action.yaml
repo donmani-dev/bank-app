@@ -9,6 +9,7 @@ on:
 env:
   AZURE_WEBAPP_NAME: 'dotnettrainingbankapp'
   FRONTEND_APP_IMAGE_NAME: 'thebankappcontainer.azurecr.io/bankappfrontend:${{ github.sha }}'
+  TRACKING_SYSTEM_APP_IMAGE_NAME: 'thebankappcontainer.azurecr.io/banktrackingsystem:${{ github.sha }}'
 
 jobs:
   Build_Actions_Job:
@@ -26,30 +27,30 @@ jobs:
         run: |
           ls ${{ github.workspace }}
       
-      - name: Build and push BankAppBackend Docker image
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          PROJECT_ROOT_PATH: 'bank-app-backend'
-          DOCKERFILE_PATH: 'BankAppBackend/Dockerfile'
-          IMAGE_NAME: 'thebankappcontainer.azurecr.io/bankappbackend'
-        run: |
-          cd $PROJECT_ROOT_PATH
-          docker build -f $DOCKERFILE_PATH --force-rm -t $IMAGE_NAME .
-          docker login thebankappcontainer.azurecr.io -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-          docker push $IMAGE_NAME
+      # - name: Build and push BankAppBackend Docker image
+      #   env:
+      #     DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      #     DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      #     PROJECT_ROOT_PATH: 'bank-app-backend'
+      #     DOCKERFILE_PATH: 'BankAppBackend/Dockerfile'
+      #     IMAGE_NAME: 'thebankappcontainer.azurecr.io/bankappbackend'
+      #   run: |
+      #     cd $PROJECT_ROOT_PATH
+      #     docker build -f $DOCKERFILE_PATH --force-rm -t $IMAGE_NAME .
+      #     docker login thebankappcontainer.azurecr.io -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+      #     docker push $IMAGE_NAME
           
-      - name: Build and push bank-app-frontend Docker image
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          PROJECT_ROOT_PATH: 'bank-app-frontend'
-          DOCKERFILE_PATH: 'bank-app-frontend/Dockerfile'
-        run: |
-          cd $PROJECT_ROOT_PATH          
-          docker build -f $DOCKERFILE_PATH --force-rm -t ${{ env.FRONTEND_APP_IMAGE_NAME }} .
-          docker login thebankappcontainer.azurecr.io -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-          docker push ${{ env.FRONTEND_APP_IMAGE_NAME }}
+      # - name: Build and push bank-app-frontend Docker image
+      #   env:
+      #     DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      #     DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      #     PROJECT_ROOT_PATH: 'bank-app-frontend'
+      #     DOCKERFILE_PATH: 'bank-app-frontend/Dockerfile'
+      #   run: |
+      #     cd $PROJECT_ROOT_PATH          
+      #     docker build -f $DOCKERFILE_PATH --force-rm -t ${{ env.FRONTEND_APP_IMAGE_NAME }} .
+      #     docker login thebankappcontainer.azurecr.io -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+      #     docker push ${{ env.FRONTEND_APP_IMAGE_NAME }}
           
       - name: Build and push BankTrackingSystem Docker image
         env:
@@ -82,3 +83,21 @@ jobs:
       #     publish-profile: ${{ secrets.azureWebAppPublishProfileProduction }}
       #     images: ${{ env.FRONTEND_APP_IMAGE_NAME }}
       #     restart: true
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_SUBSCRIPTION }}
+
+      - name: Azure CLI Script
+        uses: azure/CLI@v1
+        with:
+          azcliversion: latest
+          inlineScript: |
+            az account show
+
+      - name: Build and deploy Container App
+        uses: azure/container-apps-deploy-action@v1
+        with:
+          resourceGroup: myResourceGroup
+          imageToDeploy: thebankappcontainer.azurecr.io/banktrackingsystem:${{ github.sha }}
+          containerAppName: bank-tracking-system
