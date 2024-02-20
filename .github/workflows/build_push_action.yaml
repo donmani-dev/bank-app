@@ -98,7 +98,6 @@ jobs:
           containerAppEnvironment: bank-environment
           containerAppName: bank-app-sql
           imageToDeploy: mcr.microsoft.com/mssql/server:2022-latest
-          ingress: internal
           targetPort: 1433
           environmentVariables:
             ACCEPT_EULA=Y
@@ -111,7 +110,6 @@ jobs:
           containerAppEnvironment: bank-environment
           containerAppName: bank-app-redis
           imageToDeploy: redis:latest
-          ingress: internal
           targetPort: 6379    
     
   Deploy:
@@ -203,5 +201,5 @@ jobs:
           environmentVariables:
             FrontEndConnectionString=http://bank-app-frontend
             ASPNETCORE_ENVIRONMENT=Production
-            RedisConnectionString=bank-app-redis.redis.cache.windows.net:6380,password=HEnwEciMkBHZ7YfkcyLe0VRMKEFh7XPR7AzCaOlFdnk=,ssl=True,abortConnect=False
+            RedisConnectionString='bank-app-redis.redis.cache.windows.net:6380,password=HEnwEciMkBHZ7YfkcyLe0VRMKEFh7XPR7AzCaOlFdnk=,ssl=True,abortConnect=False'
 
