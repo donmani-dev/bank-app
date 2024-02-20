@@ -181,7 +181,7 @@ jobs:
           acrUsername: ${{ secrets.DOCKER_USERNAME }}
           acrPassword: ${{ secrets.DOCKER_PASSWORD }}
           imageToDeploy: ${{ env.BACKEND_APP_IMAGE_NAME }}
-          targetPort: 8081
+          targetPort: 8080
           environmentVariables:
             ASPNETCORE_ENVIRONMENT=Production
             SQLConnectionString=Server='${{ SECRETS.AZURE_SQL_CONNECTION_STRING }}'
@@ -197,6 +197,7 @@ jobs:
           acrUsername: ${{ secrets.DOCKER_USERNAME }}
           acrPassword: ${{ secrets.DOCKER_PASSWORD }}
           imageToDeploy: ${{ env.TRACKING_SYSTEM_APP_IMAGE_NAME }}
+          targetPort: 8080
           environmentVariables:
             FrontEndConnectionString=http://bank-app-frontend
             ASPNETCORE_ENVIRONMENT=Production
