@@ -184,7 +184,7 @@ jobs:
           targetPort: 8081
           environmentVariables:
             ASPNETCORE_ENVIRONMENT=Production
-            SQLConnectionString=Server='Server=http://bank-app-sql;Database=BankDb;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True;'
+            SQLConnectionString=Server='${{ SECRETS.AZURE_SQL_CONNECTION_STRING }}'
             RedisConnectionString='bank-app-redis.redis.cache.windows.net:6380,password=HEnwEciMkBHZ7YfkcyLe0VRMKEFh7XPR7AzCaOlFdnk=,ssl=True,abortConnect=False'
 
       - name: Deploy Tracking Container App
