@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "BankingAzureFunction": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7088"
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "httpPort": 34884,
+      "useSSL": false
+    }
+  }
+}

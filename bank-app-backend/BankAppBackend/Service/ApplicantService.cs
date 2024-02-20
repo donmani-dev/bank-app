@@ -3,6 +3,8 @@ using BankAppBackend.Models;
 using BankAppBackend.Repositories.Interfaces;
 using BankAppBackend.Service.Interfaces;
 using BankTrackingSystem.Models;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace BankAppBackend.Service
 {
@@ -11,28 +13,26 @@ namespace BankAppBackend.Service
         private IApplicantRepository applicantRepository;
         private IRedisMessagePublisherService redisMessagePublisherService;
         private ICustomerService customerService;
-        //private ITellerService tellerService;
-        public ApplicantService(IApplicantRepository applicantRepository, IRedisMessagePublisherService redisMessagePublisherService, ICustomerService customerService)
+        private ILogger<ApplicantService> logger;
+        public ApplicantService(IApplicantRepository applicantRepository, IRedisMessagePublisherService redisMessagePublisherService, ICustomerService customerService, ILogger<ApplicantService> logger)
         {
             this.applicantRepository = applicantRepository;
             this.redisMessagePublisherService = redisMessagePublisherService;
             this.customerService = customerService;
-            //this.tellerService = tellerService;
+            this.logger = logger;
         }
 
         public Applicant AddApplicant(Applicant applicant)
         {
-            //Teller teller = this.tellerService.GetTellerById(applicant.TellerId);
             if (applicantRepository.FindApplicantByCNIC(applicant.CNIC) != null)
             {
                 throw new EntityAlreadyExist($"Applicant already exist with CNIC number : {applicant.CNIC}");
             }
-            else if(applicantRepository.FindApplicantByEmailAddress(applicant.EmailAddress) != null)
+            else if (applicantRepository.FindApplicantByEmailAddress(applicant.EmailAddress) != null)
             {
                 throw new EntityAlreadyExist($"Applicant already exist with email address : {applicant.EmailAddress}");
             }
             applicant.AccountStatus = AccountStatus.PENDING;
-            //applicant.Teller = teller;
             applicantRepository.AddApplicant(applicant);
             return applicant;
         }
@@ -55,7 +55,7 @@ namespace BankAppBackend.Service
         public Applicant GetApplicantById(long applicantId)
         {
             Applicant? applicant = applicantRepository.findApplicantById(applicantId);
-            if(applicant == null)
+            if (applicant == null)
             {
                 throw new EntityNotFound($"Applicant not found with applicant id :{applicantId}");
             }
@@ -65,15 +65,15 @@ namespace BankAppBackend.Service
         public Applicant? GetApplicantDetailsFromCredentials(string emailAddress, string password)
         {
             Applicant? applicant = applicantRepository.FindApplicantByEmailAddress(emailAddress);
-            if(applicant == null)
+            if (applicant == null)
             {
                 throw new EntityNotFound($"User not found with email address {emailAddress}");
             }
-            else if(applicant.Customer == null)
+            else if (applicant.Customer == null)
             {
                 throw new EntityNotFound($"Your applicant request is not approved by bank officials yet");
             }
-            else if(applicant.Customer.Password.Equals(password))
+            else if (applicant.Customer.Password.Equals(password))
             {
                 return applicant;
             }
@@ -81,7 +81,7 @@ namespace BankAppBackend.Service
             return null;
         }
 
-        public void UpdateApplicantStatus(long applicantId, AccountStatus accountStatus, Teller teller)
+        public async void UpdateApplicantStatus(long applicantId, AccountStatus accountStatus, Teller teller)
         {
             Applicant? applicant = GetApplicantById(applicantId);
             if (applicant == null)
@@ -89,7 +89,7 @@ namespace BankAppBackend.Service
                 throw new EntityNotFound($"Applicant with id {applicantId} not found");
             }
 
-            if(customerService.CheckIfCustomerExistAgainstApplicantId(applicantId))
+            if (customerService.CheckIfCustomerExistAgainstApplicantId(applicantId))
             {
                 throw new EntityAlreadyExist($"Customer already exist against this applicant id {applicantId}");
             }
@@ -103,13 +103,42 @@ namespace BankAppBackend.Service
                 customerService.CreateCustomerAndAccount(applicant);
             }
 
-            //preparing model to send on queue for another MVC App.
             ApplicantMessagesModel applicantMessageModel = new ApplicantMessagesModel();
             applicantMessageModel.ApplicantId = applicant.Id;
             applicantMessageModel.accountStatus = accountStatus;
             applicantMessageModel.ApplicantEmailAddress = applicant.EmailAddress;
             applicantMessageModel.Message = $"Dear Applicant {applicant.ApplicateName}, your status has been updated to {accountStatus}";
-            redisMessagePublisherService.sendMessage(applicantMessageModel);
+            await sendMailToApplicant(applicantMessageModel);
+        }
+
+        private async Task sendMailToApplicant(ApplicantMessagesModel applicantMessagesModel)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                try
+                {
+                    string url = "http://localhost:7088/api/EmailFunction";
+                    string jsonRequestData = JsonConvert.SerializeObject(applicantMessagesModel);
+                    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, url);
+                    request.Headers.Add("Accept", "application/json");
+                    request.Content = new StringContent(jsonRequestData, Encoding.UTF8, "application/json");
+
+                    HttpResponseMessage response = await client.SendAsync(request);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        logger.LogDebug("Email send successfully");
+                    }
+                    else
+                    {
+                        logger.LogError($"Error occurred with status code {response.StatusCode}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError($"Exception occurred " + ex.Message);
+                }
+            }
         }
     }
 }

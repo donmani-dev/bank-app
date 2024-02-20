@@ -32,12 +32,12 @@ string connectionString = builder.Configuration.GetConnectionString("SQLConnecti
 builder.Services.AddDbContext<DatabaseContext>(conn => conn.UseSqlServer(connectionString));
 // Apply migrations
 var app = builder.Build();
-using var scope = app.Services.CreateScope();
+/*using var scope = app.Services.CreateScope();
 var context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
 if (context.Database.GetPendingMigrations().Any())
 {
     await context.Database.MigrateAsync();
-}
+}*/
 
 //Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
