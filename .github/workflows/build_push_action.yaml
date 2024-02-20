@@ -80,9 +80,8 @@ jobs:
       #     images: ${{ env.FRONTEND_APP_IMAGE_NAME }}
       #     restart: true
 
-  Deploy:
-    name: Deploy all built artifacts + dependencies to Container App instances
-    needs: Build
+  DeployDeps:
+    name: Deploy SQL Server and Redis
     runs-on: ubuntu-latest
     steps:
       - run: echo "This job was triggered by a ${{ github.event_name }} event"
@@ -91,13 +90,6 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_SUBSCRIPTION }}
-
-      - name: Azure CLI Script
-        uses: azure/CLI@v1
-        with:
-          azcliversion: latest
-          inlineScript: |
-            az account show
 
       - name: Deploy Sql Server
         uses: azure/container-apps-deploy-action@v1
@@ -120,7 +112,51 @@ jobs:
           containerAppName: bank-app-redis
           imageToDeploy: redis:latest
           ingress: internal
-          targetPort: 6379
+          targetPort: 6379    
+    
+  Deploy:
+    name: Deploy all built artifacts + dependencies to Container App instances
+    needs: 
+      - Build
+      - BuildDeps
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "This job was triggered by a ${{ github.event_name }} event"
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_SUBSCRIPTION }}
+
+      - name: Azure CLI Script
+        uses: azure/CLI@v1
+        with:
+          azcliversion: latest
+          inlineScript: |
+            az account show
+
+      # - name: Deploy Sql Server
+      #   uses: azure/container-apps-deploy-action@v1
+      #   with:
+      #     resourceGroup: myResourceGroup
+      #     containerAppEnvironment: bank-environment
+      #     containerAppName: bank-app-sql
+      #     imageToDeploy: mcr.microsoft.com/mssql/server:2022-latest
+      #     ingress: internal
+      #     targetPort: 1433
+      #     environmentVariables:
+      #       ACCEPT_EULA=Y
+      #       SA_PASSWORD=YourStrong@Passw0rd
+
+      # - name: Deploy Redis
+      #   uses: azure/container-apps-deploy-action@v1
+      #   with:
+      #     resourceGroup: myResourceGroup
+      #     containerAppEnvironment: bank-environment
+      #     containerAppName: bank-app-redis
+      #     imageToDeploy: redis:latest
+      #     ingress: internal
+      #     targetPort: 6379
 
       - name: Deploy Frontend Container App
         uses: azure/container-apps-deploy-action@v1
@@ -151,7 +187,7 @@ jobs:
           environmentVariables:
             ASPNETCORE_ENVIRONMENT=Production
             RedisConnectionString=bank-app-redis.redis.cache.windows.net:6380,password=HEnwEciMkBHZ7YfkcyLe0VRMKEFh7XPR7AzCaOlFdnk=,ssl=True,abortConnect=False
-            SQLConnectionString="Server=http://bank-app-sql;Database=BankDb;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True;"
+            SQLConnectionString=Server=http://bank-app-sql;Database=BankDb;User Id=sa;Password=YourStrong@Passw0rd;TrustServerCertificate=True;
 
       - name: Deploy Tracking Container App
         uses: azure/container-apps-deploy-action@v1
