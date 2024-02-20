@@ -118,7 +118,7 @@ jobs:
     name: Deploy all built artifacts + dependencies to Container App instances
     needs: 
       - Build
-      - BuildDeps
+      - DeployDeps
     runs-on: ubuntu-latest
     steps:
       - run: echo "This job was triggered by a ${{ github.event_name }} event"
