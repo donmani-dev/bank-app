@@ -56,7 +56,7 @@ namespace BankTrackingSystem
             ConnectionStringsOptions connectionStringsOptions = new ConnectionStringsOptions();
             _configuration.GetSection(ConnectionStringsOptions.ConnectionStrings).Bind(connectionStringsOptions);
 
-            return ConnectionMultiplexer.Connect(connectionStringsOptions.RedisConnectionString);
+            return ConnectionMultiplexer.Connect(new string(Environment.GetEnvironmentVariable("RedisConnectionString") ?? connectionStringsOptions.RedisConnectionString));
         }
     }
 }
