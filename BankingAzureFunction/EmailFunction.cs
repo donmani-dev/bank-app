@@ -9,12 +9,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Microsoft.Extensions.Configuration;
 using Azure.Communication.Email;
-using System.Collections.Generic;
-using System.Threading;
-using Azure;
-using Azure.Identity;
-using Amazon.SimpleEmail.Model;
-using System.Xml.Linq;
+using System.Configuration;
 
 namespace BankingAzureFunction
 {
@@ -26,18 +21,19 @@ namespace BankingAzureFunction
             this.config = config;
         }
 
+
         //const string ConnectionString = "endpoint=https://bankingappcommunicationservice.unitedstates.communication.azure.com/;accesskey=yGgzj0R9vJrB7C3rrwY/EcX2vLIEXA89G3rI0ra4xMDNvhsqNDkEjd6byNTBnIWAX5ThqAMJIeg08V9StCwctg==";
         [FunctionName("EmailFunction")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
             ILogger log)
         {
 
             try
             {
                 // Reading connection string
-                string connectionString = config.GetConnectionString("EmailServiceConnectionString");
-                
+                string connectionString = Environment.GetEnvironmentVariable("EmailServiceConnectionString");;
+
                 // Deserialize the request body into ApplicantMessageModel object
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
                 ApplicantMessageModel applicantMessageData = JsonConvert.DeserializeObject<ApplicantMessageModel>(requestBody);
@@ -48,7 +44,7 @@ namespace BankingAzureFunction
                 // Define email content
                 string subject = "Bank Application Status Updated";
                 string htmlContent = GetEmailContent(applicantMessageData);
-                string sender = config.GetConnectionString("Email");
+                string sender = Environment.GetEnvironmentVariable("Email"); ;
                 string recipient = applicantMessageData.ApplicantEmailAddress;
 
                 // Send email
@@ -64,14 +60,14 @@ namespace BankingAzureFunction
             }
             catch (Exception ex)
             {
-                log.LogError(ex, "An error occurred while processing the request.");
+                log.LogError(ex, "An error occurred while processing the request."+ex.Message);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
 
         private string GetEmailContent(ApplicantMessageModel applicantMessageData)
         {
-            string statusMessage = applicantMessageData.accountStatus.Equals(AccountStatus.APPROVED) ?
+            string statusMessage = applicantMessageData.accountStatus == AccountStatus.APPROVED ?
                 "Please register yourself at this URL :<a href='http://localhost.com'>Registeration Link</a>" : "";
             return $@"
                 <html>
