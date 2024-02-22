@@ -28,18 +28,17 @@ builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<IRedisMessagePublisherService, RedisMessagePublisherService>();
 
-//string connectionString = new string(value: Environment.GetEnvironmentVariable("SQLConnectionString")) ?? builder.Configuration.GetConnectionString("SQLConnectionString");
-//Console.WriteLine(connectionString);
+//string connectionString = new string(value: Environment.GetEnvironmentVariable("SQLConnectionString") ?? builder.Configuration.GetConnectionString("SQLConnectionString"));
 string connectionString = builder.Configuration["sqlConnectionString"] ?? throw new InvalidOperationException("Connection string of name SQLConnectionString not found");
 builder.Services.AddDbContext<DatabaseContext>(conn => conn.UseSqlServer(connectionString));
 // Apply migrations
 var app = builder.Build();
-/*using var scope = app.Services.CreateScope();
+using var scope = app.Services.CreateScope();
 var context = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
 if (context.Database.GetPendingMigrations().Any())
 {
     await context.Database.MigrateAsync();
-}*/
+}
 
 //Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
