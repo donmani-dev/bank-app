@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using Microsoft.Extensions.Configuration;
 using Azure.Communication.Email;
 using System.Configuration;
+using static System.Net.WebRequestMethods;
 
 namespace BankingAzureFunction
 {
@@ -67,8 +68,10 @@ namespace BankingAzureFunction
 
         private string GetEmailContent(ApplicantMessageModel applicantMessageData)
         {
+            string link = $"https://localhost:7025/customer/register/{applicantMessageData.ApplicantEmailAddress}";
+            Console.WriteLine("Email:" + link);
             string statusMessage = applicantMessageData.accountStatus == AccountStatus.APPROVED ?
-                "Please register yourself at this URL :<a href='http://localhost.com'>Registeration Link</a>" : "";
+                $@"Please register yourself at this URL :<a href='{link}'>Registeration Link</a>" : "";
             return $@"
                 <html>
                 <h4>{applicantMessageData.Message}</h4>

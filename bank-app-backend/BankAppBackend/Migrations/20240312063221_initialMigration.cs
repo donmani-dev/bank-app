@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BankAppBackend.Migrations
 {
     /// <inheritdoc />
-    public partial class refactoredTransactionModel : Migration
+    public partial class initialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,7 +17,9 @@ namespace BankAppBackend.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    EmailAddress = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -33,6 +35,7 @@ namespace BankAppBackend.Migrations
                     ApplicateName = table.Column<string>(type: "nvarchar(25)", maxLength: 25, nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CNIC = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    EmailAddress = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     DOB = table.Column<DateOnly>(type: "date", nullable: false),
                     AccountType = table.Column<int>(type: "int", nullable: false),
                     AccountStatus = table.Column<int>(type: "int", nullable: false),
@@ -122,6 +125,12 @@ namespace BankAppBackend.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Applicants_EmailAddress",
+                table: "Applicants",
+                column: "EmailAddress",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Applicants_TellerId",
                 table: "Applicants",
                 column: "TellerId");
@@ -130,6 +139,12 @@ namespace BankAppBackend.Migrations
                 name: "IX_Customers_ApplicantId",
                 table: "Customers",
                 column: "ApplicantId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tellers_EmailAddress",
+                table: "Tellers",
+                column: "EmailAddress",
                 unique: true);
 
             migrationBuilder.CreateIndex(
