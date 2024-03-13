@@ -7,22 +7,12 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Microsoft.Extensions.Configuration;
 using Azure.Communication.Email;
-using System.Configuration;
-using static System.Net.WebRequestMethods;
 
 namespace BankingAzureFunction
 {
     public class EmailFunction
     {
-        private readonly IConfiguration config;
-        public EmailFunction(IConfiguration config)
-        {
-            this.config = config;
-        }
-
-
         //const string ConnectionString = "endpoint=https://bankingappcommunicationservice.unitedstates.communication.azure.com/;accesskey=yGgzj0R9vJrB7C3rrwY/EcX2vLIEXA89G3rI0ra4xMDNvhsqNDkEjd6byNTBnIWAX5ThqAMJIeg08V9StCwctg==";
         [FunctionName("EmailFunction")]
         public async Task<IActionResult> Run(
@@ -33,7 +23,7 @@ namespace BankingAzureFunction
             try
             {
                 // Reading connection string
-                string connectionString = Environment.GetEnvironmentVariable("EmailServiceConnectionString");;
+                string connectionString = Environment.GetEnvironmentVariable("EmailServiceConnectionString");
 
                 // Deserialize the request body into ApplicantMessageModel object
                 string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
@@ -68,10 +58,8 @@ namespace BankingAzureFunction
 
         private string GetEmailContent(ApplicantMessageModel applicantMessageData)
         {
-            string link = $"https://localhost:7025/customer/register/{applicantMessageData.ApplicantEmailAddress}";
-            Console.WriteLine("Email:" + link);
             string statusMessage = applicantMessageData.accountStatus == AccountStatus.APPROVED ?
-                $@"Please register yourself at this URL :<a href='{link}'>Registeration Link</a>" : "";
+                $@"Please register yourself at this URL :<a href='{Environment.GetEnvironmentVariable("FrontendConnectionString")}/customer/register/{applicantMessageData.ApplicantEmailAddress}'>Registeration Link</a>" : "";
             return $@"
                 <html>
                 <h4>{applicantMessageData.Message}</h4>
